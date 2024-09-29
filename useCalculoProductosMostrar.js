@@ -1,14 +1,18 @@
-import { useRef } from 'react';
+import { useRef } from "react";
 
 // Nota: llamar este hook solo dentro de un useEffect o una funcion asincrona dado que espera una referencia a un componente del DOM
-// espera una promesa que resuelve un numero entero antes de que se llame a una api o se haga una peticion al servidor
+// Espera una promesa que resuelve un numero entero antes de que se llame a una api para especificar total de productos que se solicitaran. (parametros de consulta)
 function useCalculoProductosMostrar() {
-
   const prevSidebarRef = useRef(null);
 
-  return (componenteRef, sidebar) => {
+  // tamaños segun la cuadricula grid de los productos
+  const productoWidth = 175;
+  const gap = 20;
+  const productoHeight = 220;
 
-    let tiempo = sidebar ? 800 : 500;
+  // requerido el contexto de la barra lateral (true o false)
+  return (componenteRef, sidebar) => {
+    let tiempo = sidebar ? 800 : 500; // es necesario que se espera que el sidebar termine la animación de open o cierre antes de proceder
 
     // Si el valor anterior de sidebar es igual al valor actual, establecer tiempo a 0
     if (prevSidebarRef.current === sidebar) {
@@ -23,18 +27,22 @@ function useCalculoProductosMostrar() {
         let totalProductos = 1;
 
         if (componenteRef?.current) {
-          const { width, height } = componenteRef.current.getBoundingClientRect();
+          const { width, height } =
+            componenteRef.current.getBoundingClientRect();
+          // es necesario calcular la suma total del gap para restarla del width y height disponible
+          const sumaGapProductoWidth = (Math.floor(width / productoWidth) - 1) * gap;
+          const sumaGapProductoHeight = (Math.floor(height / productoHeight) - 1) * gap;
 
-          // tamaños segun la cuadricula grid de los productos
-          const productoWidth = 171;
-          const separacion = 20;
-          const productoHeight = 200;
+          const columnas = Math.floor(
+            (width - sumaGapProductoWidth) / productoWidth
+          );
+          const filas = Math.floor(
+            (height - sumaGapProductoHeight) / productoHeight
+          );
 
-          const columnas = Math.floor(width / (productoWidth + separacion));
-          const filas = Math.floor(height / productoHeight);
-
-          totalProductos = columnas * filas;
+          totalProductos = filas * columnas;
         } else {
+          console.error("El componente no esta montado en el DOM");
           // se ejecuta si el componente no esta montado en el DOM, solo para evitar errores por falta de referencia (Ref) del dom
           if (window.innerWidth < 1200 || window.innerHeight < 500) {
             totalProductos = 6;
