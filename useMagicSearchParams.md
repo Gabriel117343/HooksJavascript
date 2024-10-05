@@ -3,7 +3,7 @@
 ## Introducción
 
 El hook `useMagicSearchParams` es una herramienta personalizada diseñada para manejar eficientemente los parámetros de búsqueda en la URL dentro de aplicaciones React que utilizan `react-router-dom`.
-Su principal objetivo es simplificar y centralizar la gestión de parámetros de búsqueda, especialmente en escenarios donde hay parámetros obligatorios y opcionales, proporcionando una manera consistente y reutilizable de filtrar datos basados en estos parámetros.
+Su principal objetivo es simplificar y centralizar la gestión de parámetros de búsqueda, especialmente en escenarios donde hay parámetros obligatorios y opcionales, proporcionando una manera consistente y reutilizable de filtrar datos basados en estos parámetros, combina el patrón `Clousure` llevado a un Hook para tener funciones privadas y publicas que serán retornadas.
 
 ## Motivación y Razones para su Creación
 
