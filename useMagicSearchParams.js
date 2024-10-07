@@ -1,7 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 
 // HOOK PERSONALIZADO CON TECNICAS AVANZADAS PARA MANEJAR LOS PARAMETROS DE BUSQUEDA DE CUALQUIER PAGINACIÓN
-
 export const useMagicSearchParams = ({ mandatory = {}, optional = {} }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -17,7 +16,7 @@ export const useMagicSearchParams = ({ mandatory = {}, optional = {} }) => {
     } else if (Array.isArray(TOTAL_PARAMS_PAGE[key])) {
       return value.split(",");
     }
-    // Nota: no se convierten las fechas ya qué es mejor manejarlas directamente en el componente que las recibe debido a que se pueden necesitar en diferentes formatos
+    // Nota: no se convierten las fechas ya qué es mejor manejarlas directamente en el componente que las recibe
     return value;
   };
 
@@ -75,16 +74,27 @@ export const useMagicSearchParams = ({ mandatory = {}, optional = {} }) => {
     return orderedParams;
   };
 
-  const limpiarParametros = ({ mantenerParamsUrl = true } = {}) => {
-    // por defeto no se limpian los parametros obligatorios de la paginación ya que se perdería la paginación por defecto y si ya estan en la URL no se eliminan
+  const parametrosMandatoriosUrl = () => {
+    const totalParametros = obtenerParametros({ convertir: false });
+    const paramsUrlEncontrados = Object.keys(totalParametros).reduce((acc, key) => {
+      if (Object.hasOwn(mandatory, key)) {
+        acc[key] = totalParametros[key];
+      }
+      return acc;
+    }, {});
+    return paramsUrlEncontrados;
+  };
+  
 
-    const { page, page_size, incluir_inactivos } = obtenerParametros({ convertir: false });
+  const limpiarParametros = ({ mantenerParamsUrl = true } = {}) => {
+    // por defeto no se limpian los parametros obligatorios de la paginación ya que se perdería la paginación
+
     setSearchParams({
       ...mandatory,
+      // en caso se encuentren parametros en la URL reemplazarán los parametros mandatorios por defecto
       ...(mantenerParamsUrl && {
-        ...(page && { page }),
-        ...(page_size && { page_size }),
-        ...(incluir_inactivos && { incluir_inactivos }),
+        ...(parametrosMandatoriosUrl()),
+       
       }),
     });
   };

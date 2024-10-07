@@ -1,4 +1,4 @@
-# Documentación del Hook personalizado `useMagicSearchParams`
+# Documentación del Hook personalizado `useMagicSearchParams`🪄
 
 ## Introducción
 
@@ -196,18 +196,18 @@ const ordenarParametros = (parametrosFiltrados) => {
 
 ```javascript
 
-const limpiarParametros = ({ mantenerParamsUrl = true } = {}) => {
-  // Por defecto, se restablecen los parámetros obligatorios
-  const { page, page_size, incluir_inactivos } = obtenerParametros({ convertir: false });
-  setSearchParams({
-    ...mandatory,
-    ...(mantenerParamsUrl && {
-      ...(page && { page }),
-      ...(page_size && { page_size }),
-      ...(incluir_inactivos && { incluir_inactivos }),
-    }),
-  });
-};
+ const limpiarParametros = ({ mantenerParamsUrl = true } = {}) => {
+    // por defeto no se limpian los parametros obligatorios de la paginación ya que se perdería la paginación
+
+    setSearchParams({
+      ...mandatory,
+      // en caso se encuentren parametros en la URL reemplazarán los parametros mandatorios por defecto
+      ...(mantenerParamsUrl && {
+        ...(parametrosMandatoriosUrl()),
+       
+      }),
+    });
+  };
 
 ```
 **Descripción**: Restablece los parámetros de búsqueda a los valores obligatorios por defecto o mantiene los parámetros obligatorios actuales que están en la URL, según el valor de `mantenerParamsUrl`.
@@ -388,7 +388,7 @@ export const PaginacionProductos = ({ cantidad }) => {
 
 ```
 
-### Justificación de No convertir Fechas
+### Justificación de No convertir Fechas 📅
 
 No se realiza la conversión automática de parámetros de tipo fecha (Date) en la función obtenerParametros() porque:
 
@@ -396,15 +396,17 @@ No se realiza la conversión automática de parámetros de tipo fecha (Date) en 
 
 **Control en el Componente**: Es más seguro y flexible manejar la conversión y validación de fechas directamente en el componente que las utiliza, permitiendo aplicar lógica específica según las necesidades (por ejemplo algúna biblioteca de manejo de fechas).
 
-
-
 ### Beneficios del uso del Hook en Componentes.
 
-**Código Más Limpio y Mantenible**: Al delegar la gestión de los parámetros al hook, el componente se mantiene enfocado en la lógica específica de la interfaz y la interacción con el usuario.
+**1. ✅Código Más Limpio y Mantenible**: Al delegar la gestión de los parámetros al hook, el componente se mantiene enfocado en la lógica específica de la interfaz y la interacción con el usuario.
 
-**Reutilización**: El mismo hook puede ser utilizado en otros componentes simplemente proporcionando los parámetros obligatorios y opcionales correspondientes.
+**2. ✅Reutilización**: El mismo hook puede ser utilizado en otros componentes simplemente proporcionando los parámetros obligatorios y opcionales correspondientes.
 
-**Consistencia**: Al tener una única fuente de verdad para el manejo de los parámetros, se reduce el riesgo de inconsistencias y errores.
+**3. ✅Consistencia**: Al tener una única fuente de verdad para el manejo de los parámetros, se reduce el riesgo de inconsistencias y errores.
+
+**4. ✅Manejo seguro de parámetros**: La función `obtenerParametros` garantiza que siempre obtendrás valores válidos para los parámetros, evitando la posibilidad de acceder a valores no existentes.
+
+**5. ✅Control sobre párametros obligatorios y opcionales**:  Puedes definir fácilmente cuáles parámetros son obligatorios y cuáles son opcionales, mejorando la consistencia y robustez de tu aplicación.
 
 ## Conclusión 
 
